@@ -1,5 +1,4 @@
 import datetime
-import logging
 
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
@@ -11,6 +10,6 @@ dag = DAG('dag_skills_data_lake', start_date=datetime.datetime.now())
 
 greet_task = PythonOperator(
    task_id="greet_task",
-   python_callable=greet,
+   python_callable=functions_stack_exchange.greet,
    dag=dag
 )
