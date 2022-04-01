@@ -2,18 +2,19 @@ import requests
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 import pandas as pd
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 import psycopg2
 import os
+from airflow.models import Variable
 
 
 # load credentials
-USER = os.environ["USER"]
-PASSWORD = os.environ["PASSWORD"]
-ENDPOINT = os.environ["ENDPOINT"]
-PORT = os.environ["PORT"]
-DATABASENAME = os.environ["DATABASENAME"]
+USER = Variable.get("DJ_USER")
+PASSWORD = Variable.get("DJ_PASSWORD")
+ENDPOINT = Variable.get("DJ_ENDPOINT")
+PORT = Variable.get("DJ_PORT")
+DATABASENAME = Variable.get("DJ_DATABASENAME")
 
 # requst url
 URL = "https://swissdevjobs.ch/job_feed.xml"
