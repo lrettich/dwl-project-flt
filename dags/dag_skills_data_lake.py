@@ -5,6 +5,7 @@ from airflow.operators.python_operator import PythonOperator
 
 import functions_stack_exchange
 import job_request
+import stack_exchange_handler
 
 dag = DAG('dag_skills_data_lake', start_date=datetime.datetime(2022, 4, 1), schedule_interval='@daily')
 
@@ -21,4 +22,11 @@ dev_job_collection = PythonOperator(
    dag=dag
 )
 
+stack_exchange_collection = PythonOperator(
+   task_id="stack_exchange_collection",
+   python_callable=stack_exchange_handler.collect_stack_exchange_data,
+   dag=dag
+)
+
 greet_task >> dev_job_collection
+dev_job_collection >> stack_exchange_collection
