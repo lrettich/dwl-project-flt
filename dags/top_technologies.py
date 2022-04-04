@@ -17,8 +17,8 @@ def import_top_technologies():
     Import top x technologies into a table based on tags in job descriptions.
     """
 
-    ## Top x technologies by the amount of tags in job descriptions
-    top_x = 10
+    ## Only use technologies with a certain amount of appearances in job tags
+    threshold = 120
 
     sql = f"""
     CREATE TABLE IF NOT EXISTS TOP_TECHNOLOGIES AS
@@ -29,21 +29,27 @@ def import_top_technologies():
     FROM dev_jobs_1
     GROUP BY
       technology
+    HAVING
+      COUNT(*) >= {threshold}
     ORDER BY
-      COUNT(*) DESC
-    LIMIT {top_x};
+      COUNT(*) DESC;
 
     INSERT INTO TOP_TECHNOLOGIES (
     SELECT
-      technology
+      dev.technology
       ,CURRENT_TIMESTAMP import_ts
-      ,COUNT(*) COUNT
-    FROM dev_jobs_1
+      ,COUNT(dev.job_id) COUNT
+    FROM dev_jobs_1 dev
+      LEFT JOIN top_technologies tt
+        on tt.technology = dev.technology
+    WHERE 1=1
+      AND tt.technology IS NULL
     GROUP BY
-      technology
+      dev.technology
+    HAVING
+      COUNT(dev.job_id) >= {threshold}
     ORDER BY
-      COUNT(*) DESC
-    LIMIT {top_x});
+      COUNT(dev.job_id) DESC);
     """
 
     with engine.connect() as conn:
@@ -59,7 +65,7 @@ def retrieve_top_technologies():
     sql = """
     SELECT
       technology
-    FROM v_top_technologies
+    FROM top_technologies
     """
 
     with engine.connect() as conn:
