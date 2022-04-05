@@ -221,7 +221,7 @@ def google_trends():
 
     # -----------------------
 
-    kw_list = retrieve_top_technologies()
+    kw_list = top_technologies.retrieve_top_technologies()
     #gt_historical_interest(kw_list, 3)
     gt_interest_over_time_combo(kw_list)
     gt_interest_over_time_single(kw_list)
