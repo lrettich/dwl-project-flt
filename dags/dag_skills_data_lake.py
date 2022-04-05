@@ -12,12 +12,6 @@ import google_trends
 dag = DAG('dag_skills_data_lake', start_date=datetime.datetime(2022, 4, 1), schedule_interval='@daily')
 
 
-greet_task = PythonOperator(
-   task_id="greet_task",
-   python_callable=functions_stack_exchange.greet,
-   dag=dag
-)
-
 dev_job_collection = PythonOperator(
    task_id="dev_job_collection",
    python_callable=job_request.job_request,
@@ -27,6 +21,12 @@ dev_job_collection = PythonOperator(
 stack_exchange_collection = PythonOperator(
    task_id="stack_exchange_collection",
    python_callable=stack_exchange_handler.collect_stack_exchange_data,
+   dag=dag
+)
+
+stack_exchange_cleaning = PythonOperator(
+   task_id="stack_exchange_cleaning",
+   python_callable=functions_stack_exchange.greet,
    dag=dag
 )
 
@@ -42,7 +42,7 @@ google_trends_collection = PythonOperator(
    dag=dag
 )
 
-greet_task >> dev_job_collection
-dev_job_collection >> stack_exchange_collection
 dev_job_collection >> import_top_technologies
+import_top_technologies >> stack_exchange_collection
 import_top_technologies >> google_trends_collection
+stack_exchange_collection >> stack_exchange_cleaning
