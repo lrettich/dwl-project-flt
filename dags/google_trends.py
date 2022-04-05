@@ -94,8 +94,8 @@ def google_trends():
                                        day_end=delay_date_end.day,
                                        hour_end=23,
                                        cat=0,
-                                       geo='',
-                                       gprop='',
+                                       geo="CH",
+                                       gprop="",
                                        sleep=60)
 
         ## Time buffer between requests
@@ -114,6 +114,8 @@ def google_trends():
       df_final = df_final.groupby(by=["date","technology"]).mean().round()
 
       ## Load data into database
+      df_final.reset_index(inplace=True)
+      df_final = df_final[["date", "technology", "value"]]
       load_data(df_final, gt_type, "append")
 
 
@@ -159,6 +161,8 @@ def google_trends():
       df_final = df_final.groupby(by=["date","technology"]).mean().round()
 
       ## Load data into database
+      df_final.reset_index(inplace=True)
+      df_final = df_final[["date", "technology", "value"]]
       load_data(df_final, gt_type, "replace")
 
     def gt_interest_over_time_single(kw_list):
@@ -197,6 +201,8 @@ def google_trends():
           continue
 
       ## Load data into database
+      df_final.reset_index(inplace=True)
+      df_final = df_final[["date", "technology", "value"]]
       load_data(df_final, gt_type, "replace")
 
 
@@ -209,12 +215,13 @@ def google_trends():
         df.to_sql(table,
                   con=connection,
                   if_exists=load,
-                  method="multi")
+                  method="multi",
+                  index=False)
       print(f"Loading process '{table}' complete.")
 
     # -----------------------
 
     kw_list = retrieve_top_technologies()
-    gt_historical_interest(kw_list, 3)
+    #gt_historical_interest(kw_list, 3)
     gt_interest_over_time_combo(kw_list)
     gt_interest_over_time_single(kw_list)
