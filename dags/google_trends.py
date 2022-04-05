@@ -9,8 +9,8 @@ from airflow.models import Variable
 
 ## Load credentials
 GT_ENDPOINT = Variable.get('GT_ENDPOINT')
-GT_DB_NAME = Variable.get('GT_DB_NAME')
-GT_USERNAME = Variable.get('GT_USERNAME')
+GT_DB_NAME = Variable.get('GT_DATABASENAME')
+GT_USERNAME = Variable.get('GT_USER')
 GT_PASSWORD = Variable.get('GT_PASSWORD')
 
 ## Define database connection
