@@ -5,13 +5,13 @@ from airflow.models import Variable
 
 
 DJ_ENDPOINT = Variable.get('DJ_ENDPOINT')
-DJ_DB_NAME = Variable.get('DJ_DB_NAME')
-DJ_USERNAME = Variable.get('DJ_USERNAME')
+DJ_DB_NAME = Variable.get('DJ_DATABASENAME')
+DJ_USERNAME = Variable.get('DJ_USER')
 DJ_PASSWORD = Variable.get('DJ_PASSWORD')
 
 SE_ENDPOINT = Variable.get('SE_ENDPOINT')
-SE_DB_NAME = Variable.get('SE_DB_NAME')
-SE_USERNAME = Variable.get('SE_USERNAME')
+SE_DB_NAME = Variable.get('SE_DATABASENAME')
+SE_USERNAME = Variable.get('SE_USER')
 SE_PASSWORD = Variable.get('SE_PASSWORD')
 
 SE_API_KEY = '8SD3PD5C6fVJBH1h0kpk3w(('
