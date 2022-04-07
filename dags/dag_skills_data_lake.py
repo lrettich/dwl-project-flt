@@ -21,6 +21,7 @@ dev_job_collection = PythonOperator(
 stack_exchange_collection = PythonOperator(
    task_id="stack_exchange_collection",
    python_callable=stack_exchange_handler.collect_stack_exchange_data,
+   provide_context=True,
    dag=dag
 )
 
