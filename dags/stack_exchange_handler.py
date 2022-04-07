@@ -31,5 +31,6 @@ def collect_stack_exchange_data(**kwargs):
     # Initiate and trigger StackExchangeDataCollector
     collector = StackExchangeDataCollector(se_db_connection=se_conn, dj_db_connection=dj_conn, stack_api_key=SE_API_KEY,
                                            start_datetime=kwargs.get('data_interval_start'),
-                                           end_datetime=kwargs.get('data_interval_end'))collector.read_tags(no_of_tags=NO_OF_TAGS)
+                                           end_datetime=kwargs.get('data_interval_end'))
+    collector.read_tags(no_of_tags=NO_OF_TAGS)
     collector.collect_data()
