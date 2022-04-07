@@ -27,7 +27,7 @@ stack_exchange_collection = PythonOperator(
 
 stack_exchange_cleaning = PythonOperator(
    task_id="stack_exchange_cleaning",
-   python_callable=functions_stack_exchange.greet,
+   python_callable=stack_exchange_handler.clean_stack_exchange_data,
    dag=dag
 )
 

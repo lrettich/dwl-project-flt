@@ -1,7 +1,9 @@
 import os
+from airflow.models import Variable
+
+import stack_exchange_cleaning
 from DBConnection import DBConnection
 from StackExchangeDataCollector import StackExchangeDataCollector
-from airflow.models import Variable
 
 
 DJ_ENDPOINT = Variable.get('DJ_ENDPOINT')
@@ -34,3 +36,10 @@ def collect_stack_exchange_data(**kwargs):
                                            end_datetime=kwargs.get('data_interval_end'))
     collector.read_tags(no_of_tags=NO_OF_TAGS)
     collector.collect_data()
+
+
+def clean_stack_exchange_data():
+    # Instantiate Connection to StackExchange-DB
+    se_conn = DBConnection(user=SE_USERNAME, password=SE_PASSWORD, endpoint=SE_ENDPOINT, db_name=SE_DB_NAME)
+    se_conn.init_sqlalchemy_connection()
+    stack_exchange_cleaning.delete_duplicates(conn=se_conn)
