@@ -18,13 +18,11 @@ DATABASENAME = Variable.get("DJ_DATABASENAME")
 
 # requst url
 URL = "https://swissdevjobs.ch/job_feed.xml"
-# set delay days (1: jobs posted yesterday, 2: jobs posted day before yesterday etc.)
-DELAY_DAYS = 1
 
 
 def job_request():
     """
-    Requests URL and checks for new job description. If any new jobs existing, store their attributes into DB
+    Requests URL for daily status of job announcements and send to DB
     """
 
     # define request, job attributes extraction and data transformation
@@ -103,28 +101,20 @@ def job_request():
     root_jobs = xml_request(URL)
 
 
-    # set job publishing date to check for new job descriptions
-    delay_date = datetime.today() - timedelta(days=DELAY_DAYS)
-    PUBLISHING_DATE = delay_date.strftime("%d.%m.%Y")
+    # get desired job attributes
+    job_attributes = get_attributes(root_jobs)
 
+    # create raw job data frame
+    df_raw = pd.DataFrame(job_attributes)
 
-    # check if new jobs were published
-    for job in root_jobs.findall("job"):
-        pubdate = job.find("pubdate").text
-        if pubdate != PUBLISHING_DATE:  # e.g. "18.03.2022"
-            root_jobs.remove(job)
-        else:
-            pass
+    # clean up and enrichment
 
+    df = transform_data(df_raw)
 
-    # if there are new jobs, apply functions to get job attributes and store data as df in db
-    if len(root_jobs) != 0:
-        job_attributes = get_attributes(root_jobs)
-        df_raw = pd.DataFrame(job_attributes)
-        df= transform_data(df_raw)
+    # send to DB
 
-        SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASENAME}"
+    SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASENAME}"
 
-        engine = create_engine(SQLALCHEMY_DATABASE_URL)
+    engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-        df.to_sql("dev_jobs_1", con=engine, index=False, if_exists="append")
+    df.to_sql("dev_jobs_1", con=engine, index=False, if_exists="append")
