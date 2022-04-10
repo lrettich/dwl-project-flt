@@ -10,13 +10,29 @@ def call_job_request():
     import job_request
     job_request.job_request()
 
-def call_collect_stack_exchange_data(**kwargs):
+def call_collect_stack_exchange_question_data(**kwargs):
     import stack_exchange_handler
-    stack_exchange_handler.collect_stack_exchange_data(kwargs)
+    stack_exchange_handler.collect_stack_exchange_question_data(**kwargs)
 
-def call_clean_stack_exchange_data():
+def call_collect_stack_exchange_answer_data(**kwargs):
     import stack_exchange_handler
-    stack_exchange_handler.clean_stack_exchange_data()
+    stack_exchange_handler.collect_stack_exchange_answer_data(**kwargs)
+
+def call_clean_stack_exchange_question_data():
+    import stack_exchange_handler
+    stack_exchange_handler.clean_stack_exchange_question_data()
+
+def call_clean_stack_exchange_answer_data():
+    import stack_exchange_handler
+    stack_exchange_handler.clean_stack_exchange_answer_data()
+
+def call_clean_stack_exchange_tags():
+    import stack_exchange_handler
+    stack_exchange_handler.clean_stack_exchange_tags()
+
+def call_collect_stack_exchange_missing_questions():
+    import stack_exchange_handler
+    stack_exchange_handler.collect_stack_exchange_missing_questions()
 
 def call_import_top_technologies():
     import top_technologies
@@ -24,7 +40,7 @@ def call_import_top_technologies():
 
 def call_google_trends():
     import google_trends
-    google_trends.google_trends
+    google_trends.google_trends()
 
 
 dev_job_collection = PythonOperator(
@@ -33,16 +49,41 @@ dev_job_collection = PythonOperator(
    dag=dag
 )
 
-stack_exchange_collection = PythonOperator(
-   task_id="stack_exchange_collection",
-   python_callable=call_collect_stack_exchange_data,
+stack_exchange_question_collection = PythonOperator(
+   task_id="stack_exchange_question_collection",
+   python_callable=call_collect_stack_exchange_question_data,
    provide_context=True,
    dag=dag
 )
 
-stack_exchange_cleaning = PythonOperator(
-   task_id="stack_exchange_cleaning",
-   python_callable=call_clean_stack_exchange_data,
+stack_exchange_answer_collection = PythonOperator(
+   task_id="stack_exchange_answer_collection",
+   python_callable=call_collect_stack_exchange_answer_data,
+   provide_context=True,
+   dag=dag
+)
+
+stack_exchange_question_cleaning = PythonOperator(
+   task_id="stack_exchange_question_cleaning",
+   python_callable=call_clean_stack_exchange_question_data,
+   dag=dag
+)
+
+stack_exchange_answer_cleaning = PythonOperator(
+   task_id="stack_exchange_answer_cleaning",
+   python_callable=call_clean_stack_exchange_answer_data,
+   dag=dag
+)
+
+stack_exchange_tags_cleaning = PythonOperator(
+   task_id="stack_exchange_tags_cleaning",
+   python_callable=call_clean_stack_exchange_tags,
+   dag=dag
+)
+
+stack_exchange_missing_questions_collection = PythonOperator(
+   task_id="stack_exchange_missing_questions_collection",
+   python_callable=call_collect_stack_exchange_missing_questions,
    dag=dag
 )
 
@@ -59,6 +100,11 @@ google_trends_collection = PythonOperator(
 )
 
 dev_job_collection >> import_top_technologies
-import_top_technologies >> stack_exchange_collection
 import_top_technologies >> google_trends_collection
-stack_exchange_collection >> stack_exchange_cleaning
+import_top_technologies >> stack_exchange_question_collection
+import_top_technologies >> stack_exchange_answer_collection
+stack_exchange_question_collection >> stack_exchange_question_cleaning
+stack_exchange_answer_collection >> stack_exchange_answer_cleaning
+stack_exchange_question_cleaning >> stack_exchange_missing_questions_collection
+stack_exchange_answer_cleaning >> stack_exchange_missing_questions_collection
+stack_exchange_missing_questions_collection >> stack_exchange_tags_cleaning
