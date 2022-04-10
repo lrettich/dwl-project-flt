@@ -12,13 +12,13 @@ DATABASENAME = Variable.get("DJ_DATABASENAME")
 url = f"postgresql://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASENAME}"
 engine = create_engine(url)
 
-def import_top_technologies():
+def update_table():
     """
     Import top x technologies into a table based on tags in job descriptions.
     """
 
-    ## Only use technologies with a certain amount of appearances in job tags
-    threshold = 120
+    ## Only use technologies with a certain amount of appearances in job tags (top x technologies)
+    top_tech = 10
 
     sql = f"""
     CREATE TABLE IF NOT EXISTS TOP_TECHNOLOGIES AS
@@ -29,27 +29,28 @@ def import_top_technologies():
     FROM dev_jobs_1
     GROUP BY
       technology
-    HAVING
-      COUNT(*) >= {threshold}
     ORDER BY
-      COUNT(*) DESC;
+      COUNT(*) DESC
+    LIMIT {top_tech};
 
     INSERT INTO TOP_TECHNOLOGIES (
     SELECT
-      dev.technology
+      base.technology
       ,CURRENT_TIMESTAMP import_ts
-      ,COUNT(dev.job_id) COUNT
-    FROM dev_jobs_1 dev
-      LEFT JOIN top_technologies tt
-        on tt.technology = dev.technology
+      ,base.count
+    FROM (SELECT
+          dev.technology
+          ,COUNT(dev.job_id) COUNT
+        FROM dev_jobs_1 dev
+        GROUP BY
+          dev.technology
+        ORDER BY
+          COUNT(dev.job_id) DESC
+        LIMIT {top_tech}) base
+      LEFT JOIN top_technologies top
+        ON top.technology = base.technology
     WHERE 1=1
-      AND tt.technology IS NULL
-    GROUP BY
-      dev.technology
-    HAVING
-      COUNT(dev.job_id) >= {threshold}
-    ORDER BY
-      COUNT(dev.job_id) DESC);
+      AND top.technology IS NULL)
     """
 
     with engine.connect() as conn:
@@ -57,7 +58,7 @@ def import_top_technologies():
         conn.execute(sql)
 
 
-def retrieve_top_technologies():
+def get_kw_list():
     """
     Retrieve a list of top technologies.
     """

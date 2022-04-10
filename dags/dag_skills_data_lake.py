@@ -36,7 +36,7 @@ def call_collect_stack_exchange_missing_questions():
 
 def call_import_top_technologies():
     import top_technologies
-    top_technologies.import_top_technologies()
+    top_technologies.update_table()
 
 def call_google_trends():
     import google_trends

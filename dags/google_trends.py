@@ -4,7 +4,7 @@ from itertools import combinations
 import time
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine
-import top_technologies
+from top_technologies import get_kw_list
 from airflow.models import Variable
 
 ## Load credentials
@@ -221,7 +221,7 @@ def google_trends():
 
     # -----------------------
 
-    kw_list = top_technologies.retrieve_top_technologies()
+    kw_list = get_kw_list()
     #gt_historical_interest(kw_list, 3)
     gt_interest_over_time_combo(kw_list)
     gt_interest_over_time_single(kw_list)
