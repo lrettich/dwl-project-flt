@@ -3,7 +3,7 @@ import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 
-dag = DAG('dag_skills_data_lake', start_date=datetime.datetime(2022, 4, 1), schedule_interval='@daily')
+dag = DAG('dag_skills_data_lake', start_date=datetime.datetime(2022, 4, 14), schedule_interval='@daily')
 
 
 def call_job_request():
