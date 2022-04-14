@@ -6,6 +6,11 @@ from airflow.operators.python_operator import PythonOperator
 dag = DAG('dag_skills_data_lake', start_date=datetime.datetime(2022, 4, 14), schedule_interval='@daily')
 
 
+# The following code section may look like bad coding practise, having functions with no logic besides calling
+# another function and having import statements iside of functions instead of in the beginneing of the file.
+# However, for Airflow, it is important to keep the complexity of the top level code of a DAG low.
+# As the imports below can use some time to be loaded, it is much better to only have them executed during the
+# runtime of the DAG instead of every few seconds, as it happens with imports on top level code. 
 def call_job_request():
     import job_request
     job_request.job_request()
