@@ -1,6 +1,4 @@
 import pandas as pd
-import os
-from dotenv import load_dotenv
 from sqlalchemy import column, create_engine
 from statistics import mean
 from airflow.models import Variable

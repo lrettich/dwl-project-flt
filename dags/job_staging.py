@@ -1,7 +1,5 @@
 import pandas as pd
-from dotenv import load_dotenv
 import psycopg2
-import os
 from sqlalchemy import column, create_engine
 import time
 from datetime import datetime, timedelta
@@ -39,8 +37,8 @@ def get_job_staging():
     top_tech_df = pd.read_sql_query(sql="SELECT technology FROM top_technologies", con=job_engine)
     top_10_tags = tuple(top_tech_df["technology"])
     # get raw job data
-    job_query = f"""SELECT technology, salary_avg, request_date 
-                    FROM dev_jobs_1 
+    job_query = f"""SELECT technology, salary_avg, request_date
+                    FROM dev_jobs_1
                     WHERE technology in {top_10_tags} AND
                     request_date::date >= date '{START}' AND
                     request_date::date <= date '{END}';"""
@@ -72,7 +70,7 @@ def get_job_staging():
 
     standardized_value_df = create_standardized_value_df(grouped_job_df, "technology", "technology_count", top_tech_df["technology"].str.lower())
 
-    # rename columns 
+    # rename columns
     standardized_value_df.rename(columns={"request_date": "date_swissdevjobs", "technology": "tag_swissdevjobs", "technology_count": "count_swissdevjobs"}, inplace=True)
     # select relevant columns and right order
     standardized_value_df = standardized_value_df[["date_swissdevjobs", "tag_swissdevjobs", "count_swissdevjobs", "indexed_swissdevjobs", "salary_avg", "source"]]

@@ -1,8 +1,6 @@
 from keyword import kwlist
 from pytrends.request import TrendReq
 from sqlalchemy import column, create_engine
-from dotenv import load_dotenv
-import os
 import pandas as pd
 import time
 from datetime import datetime, timedelta
@@ -61,18 +59,18 @@ def get_google_trends_simple():
         gg_trend_df_ls = []
         for tag in tag_ls:
             tag_df = pytrends.get_historical_interest(
-                        [tag], 
-                        year_start=year_start, 
-                        month_start=month_start, 
-                        day_start=day_start, 
-                        hour_start=0, 
-                        year_end=year_end, 
-                        month_end=month_end, 
-                        day_end=day_end, 
-                        hour_end=23, 
-                        cat=0, 
-                        geo='CH', 
-                        gprop='', 
+                        [tag],
+                        year_start=year_start,
+                        month_start=month_start,
+                        day_start=day_start,
+                        hour_start=0,
+                        year_end=year_end,
+                        month_end=month_end,
+                        day_end=day_end,
+                        hour_end=23,
+                        cat=0,
+                        geo='CH',
+                        gprop='',
                         sleep=10
                     )
 

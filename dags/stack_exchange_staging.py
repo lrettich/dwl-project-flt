@@ -1,6 +1,5 @@
 from datetime import timedelta, datetime, timezone, date as dt_date
 import pandas as pd
-from dotenv import load_dotenv
 import psycopg2
 import os
 from sqlalchemy import column, create_engine
@@ -8,7 +7,6 @@ import time
 from airflow.models import Variable
 
 # get credentials for stackex query
-load_dotenv()
 stack_user = Variable.get('SE_USER')
 stack_password = Variable.get('SE_PASSWORD')
 stack_endpoint = Variable.get('SE_ENDPOINT')
@@ -52,7 +50,7 @@ def get_stack_exchange_staging_2():
     # [(datetime.date(2022, 4, 25), 1650844800, 1650931200), (datetime.date(2022, 4, 26), 1650931200, 1651017600), (datetime.date(2022, 4, 27), 1651017600, 1651104000)]
     def get_query_tranches(abs_start:str, abs_end:str) -> list:
         query_tranches = []
-        # create date range 
+        # create date range
         query_date_range = pd.date_range(start=abs_start, end=abs_end).tolist()
         # create list of tuples of unix timestamps (start, end) for each day in date range
         for date in query_date_range:
@@ -130,7 +128,7 @@ def get_stack_exchange_staging_2():
     for tranch in get_query_tranches(START, END):
         raw_tranche_data = get_tranche_data(tranch[1], tranch[2])
         staged_data = stackex_staging2(raw_tranche_data, tranch[0])
-        
+
         staged_data.to_sql("stackex_staged_2", con=staged_engine, index=False, if_exists="append")
 
     # extra time to not risk bad behavoir cause by latency
