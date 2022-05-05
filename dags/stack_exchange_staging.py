@@ -101,9 +101,9 @@ def get_stack_exchange_staging_2():
         # group by tags and count
         df = df.groupby(["tags"], as_index=False).size()
         # add human readable date
-        df.loc[:, "date_stackex"] = date
+        df["date_stackex"] = date
         # add source info
-        df.loc[:, "source"] = "stackexchange"
+        df["source"] = "stackexchange"
         # assign to main tech tag
         df.loc[:, "tag_stackex"] = df.loc[:, "tags"].apply(lambda x: get_main_tag(x))
         # fill nan/none
