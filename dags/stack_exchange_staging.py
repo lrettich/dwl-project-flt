@@ -155,9 +155,9 @@ def get_stack_exchange_staging_3():
     # staged_port=os.getenv("STAGED_PORT")
     # staged_database=os.getenv("STAGED_DATABASE")
 
-    # # set up engine for staged 2 data upload
-    # STAGED_DATABASE_URL = f"postgresql+psycopg2://{staged_user}:{staged_password}@{staged_endpoint}:{staged_port}/{staged_database}"
-    # staged_engine = create_engine(STAGED_DATABASE_URL)
+    # set up engine for staged 2 data upload
+    STAGED_DATABASE_URL = f"postgresql+psycopg2://{staged_user}:{staged_password}@{staged_endpoint}:{staged_port}/{staged_database}"
+    staged_engine = create_engine(STAGED_DATABASE_URL)
 
     # get top 10 technologies from job postings
     JOB_DATABASE_URL = f"postgresql+psycopg2://{job_user}:{job_password}@{job_endpoint}:{job_port}/{job_database}"
