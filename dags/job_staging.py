@@ -44,6 +44,9 @@ def get_job_staging():
                     request_date::date <= date '{END}';"""
     raw_job_df = pd.read_sql_query(sql=job_query, con=job_engine)
 
+    # drop duplicates if any
+    raw_job_df = raw_job_df.drop_duplicates(subset=["job_id", "technology"])
+
     # group by date and technology (count technology, avg salary_avg)
     grouped_job_df = raw_job_df.groupby(["request_date", "technology"], as_index=False).agg(
         technology_count = ("technology", "count"),
