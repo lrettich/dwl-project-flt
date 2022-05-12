@@ -37,7 +37,7 @@ def get_job_staging():
     top_tech_df = pd.read_sql_query(sql="SELECT technology FROM top_technologies", con=job_engine)
     top_10_tags = tuple(top_tech_df["technology"])
     # get raw job data
-    job_query = f"""SELECT technology, salary_avg, request_date
+    job_query = f"""SELECT job_id, technology, salary_avg, request_date
                     FROM dev_jobs_1
                     WHERE technology in {top_10_tags} AND
                     request_date::date >= date '{START}' AND
