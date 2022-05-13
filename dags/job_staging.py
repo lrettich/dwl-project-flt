@@ -44,8 +44,11 @@ def get_job_staging():
                     request_date::date <= date '{END}';"""
     raw_job_df = pd.read_sql_query(sql=job_query, con=job_engine)
 
+    # turn request date to date object
+    raw_job_df["request_date"] = raw_job_df["request_date"].apply(lambda x: x.date())
+
     # drop duplicates if any
-    raw_job_df = raw_job_df.drop_duplicates(subset=["job_id", "technology"])
+    raw_job_df = raw_job_df.drop_duplicates()
 
     # group by date and technology (count technology, avg salary_avg)
     grouped_job_df = raw_job_df.groupby(["request_date", "technology"], as_index=False).agg(
@@ -55,8 +58,6 @@ def get_job_staging():
 
     # lower case technology i.e., tags
     grouped_job_df["technology"] = grouped_job_df["technology"].apply(lambda x: x.lower())
-    # convert datetime column to date format
-    grouped_job_df["request_date"] = grouped_job_df["request_date"].apply(lambda x: x.date())
     # add column source
     grouped_job_df["source"] = "swissdevjobs"
 
