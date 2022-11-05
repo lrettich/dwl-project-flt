@@ -1,7 +1,15 @@
-# dwl-project-flt
-Project for HSLU Module Data Warehouse and Data Lake Systems 1 and 2, Project Team FLT
+# Job Skills Analysis
+An ETL pipeline including use of Airflow, AWS EC2 VM, AWS RDS and Docker.
 
-## Description of the repository
+## Goal
+Extract, transform and load data to find out which IT skills i.e. technologies are most popualar in development community and which are the most demanded on job market.
+
+## Data sources
+* Google trends API: Data on which technologies are popular among a broad audience
+* Stack Overflow API: Data on which technologies developer community is discussing the most
+* SwissDevJobs: Data on which technologies are demanded the most on job market
+
+## Repository content
 * File 'docker-compose.yaml': Docker Compose file to run Apache Airflow on Docker Compose
 * Folder 'dags': Contains all the Python code that is needed in connection to the Aiflow DAG.
   * 'dag_skills_data_lake.py': Definition of the Airflow DAG
