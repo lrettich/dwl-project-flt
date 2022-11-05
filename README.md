@@ -9,23 +9,32 @@ Extract, transform and load data to find out which IT skills i.e. technologies a
 * Stack Overflow API: Data on which technologies developer community is discussing the most
 * SwissDevJobs: Data on which technologies are demanded the most on job market
 
-## Repository content
-* File 'docker-compose.yaml': Docker Compose file to run Apache Airflow on Docker Compose
-* Folder 'dags': Contains all the Python code that is needed in connection to the Aiflow DAG.
-  * 'dag_skills_data_lake.py': Definition of the Airflow DAG
-  * 'job_request.py' & 'top_technologies.py': Code in relation to DevJobs data
-  * 'DBConnection.py', 'StackExchangeDataCollector.py', 'stack_exchange_cleaning.py' & 'stack_exchange_handler.py': Code in relation to StackExchange data
-  * 'google_trends.py': Code in relation to GoogleTrends data
-* Folder 'additional_code': Other code that was used in the project
-  * 'lambda_functions/EC2_start_daily.py': Lambda-Function for regularly starting EC2
-  * 'data_analysis/ata_analysis_data_lake_StackExchange.ipynb': Jupyter Notebook for analysis of StackExchange data
+## Tech stack
+![tech stack](/img/tech_stack.png)
 
-## Manual for running the code in Apache Airflow
-1. Use a linux environment meeting the following requirements: At least two CPU kernels, at least 8GB memory, at least 16GB of free storage
-2. Install git, docker and docker-compose on the linux environment
-3. Clone this git repository to the linux environment
-4. Prepare docker run of airflow with the execution of the following commands in the project directory: 
-``mkdir -p ./dags ./logs ./plugins``, ``echo-e "AIRFLOW_UID=$(id -u)"> .env``
+## Repository content
+* docker-compose.yaml: Docker Compose file to run Apache Airflow within Docker container
+* Folder 'additional_code': First steps, exploratory analysis, and AWS lambda function to trigger EC2 instance
+* Folder 'dags': Aiflow tasks and Aiflow DAG.
+  * google_%.py: Google trends related tasks
+  * job_%.py: Develper job market related tasks
+  * stack_%.py: Stack exchange related tasks
+  * DBConnection.py: Database connection class (supports stack exchange workflow)
+  * top_technologies.py: Get top technologies as starting point
+  * merging_for_dwh.py: Merging data and store in DWH as analysis base
+  * dag_skills_data_lake.py: Construction of DAG
+  ![DAG](/img/dag.png)
+
+## Starting ETL Service
+1. Use linux environment. Minimal required capacities:
+  * 2 CPU kernels
+  * 8GB memory
+  * 16GB of storage
+2. Install git, docker and docker-compose
+3. Clone this repository to the linux environment
+4. Prepare docker run of airflow container by executing following commands in the project directory: 
+``mkdir -p ./dags ./logs ./plugins`` <br>
+``echo-e "AIRFLOW_UID=$(id -u)"> .env``
 5. Initialize Airflow with docker-compose: ``docker-compose up airflow-init``
 6. Start Airflow (in background): ``docker-compose up -d``
-7. Airflow is now accessible at port 8080 where the DAG 'dag_skills_data_lake' can be activated/started. 
+7. Airflow is now accessible at port 8080 where the DAG 'dag_skills_data_lake' can be started. 
