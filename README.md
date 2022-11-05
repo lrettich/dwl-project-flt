@@ -38,3 +38,8 @@ Extract, transform and load data to find out which IT skills i.e. technologies a
 5. Initialize Airflow with docker-compose: ``docker-compose up airflow-init``
 6. Start Airflow (in background): ``docker-compose up -d``
 7. Airflow is now accessible at port 8080 where the DAG 'dag_skills_data_lake' can be started. 
+
+## Visualization of analysis outcoms
+Two Tableau dashboard views are made to get insights regarding popular technologies among developer community and high demanded skills on job market.
+https://public.tableau.com/app/profile/filip.maric/viz/Tech_trends_RQ_1_2/RQ_1_2
+https://public.tableau.com/app/profile/filip.maric/viz/Tech_trends_RQ_3/RQ_3
